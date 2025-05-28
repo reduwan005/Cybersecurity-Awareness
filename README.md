@@ -1,2 +1,1 @@
-# Cybersecurity-Awareness
-Cybersecurity-Awareness-Quiz
+index.html
