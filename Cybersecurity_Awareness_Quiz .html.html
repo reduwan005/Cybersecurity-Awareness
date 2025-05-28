@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Awareness Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
+        .question { margin-bottom: 20px; }
+        .question h3 { margin-bottom: 10px; }
+        .question button { display: block; margin: 5px 0; }
+        .feedback { margin-top: 10px; font-weight: bold; }
+        .score { margin-top: 20px; font-size: 1.2em; }
+        .timer { font-size: 1.2em; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cybersecurity Awareness Quiz</h1>
+        <div class="timer">Time left: <span id="time">10:00</span></div>
+        <div>
+            <label for="username">Enter your name:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div id="quiz">
+            <!-- Questions will be inserted here -->
+        </div>
+        <div class="score" id="score"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is the primary method used by fake PDF converter websites to infect a user's device?",
+                options: ["Asking for email verification", "Redirecting to a payment page", "Prompting users to run a PowerShell command", "Offering free downloads of antivirus software"],
+                correct: 2,
+                explanation: "Fake PDF converter websites prompt users to run a PowerShell command, which downloads malware."
+            },
+            {
+                question: "Which of the following is a sign that a PDF converter website might be malicious?",
+                options: ["It has a clean and modern design", "It asks you to solve a CAPTCHA", "It asks you to copy and run a command in your terminal", "It supports multiple file formats"],
+                correct: 2,
+                explanation: "A malicious PDF converter website may ask you to copy and run a command in your terminal."
+            },
+            {
+                question: "What type of data is typically stolen by the malware from these fake sites?",
+                options: ["Social media posts", "Browser passwords and crypto wallet information", "Photos and videos", "Contact lists"],
+                correct: 1,
+                explanation: "The malware typically steals browser passwords and crypto wallet information."
+            },
+            {
+                question: "Which of the following is NOT an example of a similar cyberattack?",
+                options: ["Fake browser updates", "Phishing emails with malicious attachments", "Official software updates from Microsoft", "Rogue mobile apps"],
+                correct: 2,
+                explanation: "Official software updates from Microsoft are not examples of similar cyberattacks."
+            },
+            {
+                question: "What is the best immediate action if you accidentally download a suspicious file from such a site?",
+                options: ["Restart your computer", "Share the file with friends to check", "Disconnect from the internet and change all passwords", "Ignore it if the file doesn’t open"],
+                correct: 2,
+                explanation: "The best immediate action is to disconnect from the internet and change all passwords."
+            },
+            {
+                question: "What is the primary reason for generating this alert?",
+                options: ["To inform users about new software updates", "To warn users about fake PDF converter websites", "To promote antivirus software", "To provide tips on safe browsing"],
+                correct: 1,
+                explanation: "The alert is generated to warn users about fake PDF converter websites."
+            },
+            {
+                question: "What is the impact of the malware downloaded from fake PDF converter websites?",
+                options: ["Improved system performance", "Enhanced security features", "Theft of personal information", "Automatic software updates"],
+                correct: 2,
+                explanation: "The impact of the malware is the theft of personal information."
+            },
+            {
+                question: "Which of the following is a recommended action to stay safe from such threats?",
+                options: ["Use any available PDF converter website", "Run commands provided by websites", "Verify the URL of the website", "Ignore security warnings"],
+                correct: 2,
+                explanation: "It is recommended to verify the URL of the website to stay safe from such threats."
+            },
+            {
+                question: "What is the root cause of this alert?",
+                options: ["User negligence", "Software bugs", "Network issues", "Hardware failure"],
+                correct: 0,
+                explanation: "The root cause of this alert is user negligence."
+            },
+            {
+                question: "What can we learn from this alert?",
+                options: ["Always trust online tools", "Ignore suspicious websites", "Be cautious and verify URLs", "Run commands from any website"],
+                correct: 2,
+                explanation: "We can learn to be cautious and verify URLs from this alert."
+            }
+        ];
+
+        let score = 0;
+        let currentQuestion = 0;
+        const quizContainer = document.getElementById('quiz');
+        const scoreContainer = document.getElementById('score');
+        const usernameInput = document.getElementById('username');
+
+        function showQuestion() {
+            if (currentQuestion < questions.length) {
+                const question = questions[currentQuestion];
+                const questionElement = document.createElement('div');
+                questionElement.className = 'question';
+                questionElement.innerHTML = `<h3>${question.question}</h3>`;
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.innerText = option;
+                    button.onclick = () => checkAnswer(index);
+                    questionElement.appendChild(button);
+                });
+                quizContainer.innerHTML = '';
+                quizContainer.appendChild(questionElement);
+            } else {
+                showScore();
+            }
+        }
+
+        function checkAnswer(selected) {
+            const question = questions[currentQuestion];
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback';
+            if (selected === question.correct) {
+                score++;
+                feedback.innerText = `Correct! ${question.explanation}`;
+            } else {
+                feedback.innerText = `Incorrect. ${question.explanation}`;
+            }
+            quizContainer.appendChild(feedback);
+            currentQuestion++;
+            setTimeout(showQuestion, 2000);
+        }
+
+        function showScore() {
+            const username = usernameInput.value;
+            quizContainer.innerHTML = '';
+            scoreContainer.innerHTML = `Quiz completed by ${username}. Your score: ${score}/${questions.length}`;
+        }
+
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            const interval = setInterval(() => {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    showScore();
+                }
+            }, 1000);
+        }
+
+        window.onload = () => {
+            const timeDisplay = document.getElementById('time');
+            startTimer(600, timeDisplay); // 10 minutes timer
+            showQuestion();
+        };
+    </script>
+</body>
+</html>
